@@ -1,5 +1,8 @@
 # WC Charts Kit
 
+**🔗 Live Demo:** [https://minasvisual.github.io/wc-charts/](https://minasvisual.github.io/wc-charts/)  
+[![NPM Package](https://img.shields.io/npm/v/wc-charts-kit.svg)](https://www.npmjs.com/package/wc-charts-kit)
+
 A robust and component-oriented Web Component to add interactive `Chart.js` charts in any framework (or Vanilla JS) with zero bundled dependencies. The architecture closely follows the scalability guidelines of `wc-forms-kit`.
 
 ## 🚀 Installation and Usage
