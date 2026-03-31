@@ -1,0 +1,42 @@
+{
+  "name": "wc-charts-kit",
+  "version": "1.0.1",
+  "description": "Ferramenta agnóstica de Data-Visualization para Vanilla JS & Web Components com zero-dependencies e suporte a Next.js/React.",
+  "type": "module",
+  "main": "wc-chart.js",
+  "module": "wc-chart.js",
+  "exports": {
+    ".": "./wc-chart.js",
+    "./chart.umd.js": "./chart.umd.js"
+  },
+  "scripts": {
+    "dev": "npx serve .",
+    "test": "vitest run --coverage --exclude \"**/*.spec.js\"",
+    "test:ui": "playwright test",
+    "test:watch": "vitest watch --exclude \"**/*.spec.js\""
+  },
+  "keywords": [
+    "web components",
+    "vanilla js",
+    "charts",
+    "chart.js",
+    "data visualization",
+    "dataviz",
+    "dashboards"
+  ],
+  "files": [
+    "src/",
+    "wc-chart.js",
+    "chart.umd.js",
+    "README.md",
+    "AGENTS.md"
+  ],
+  "author": "Open Source Maintainer",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@vitest/coverage-v8": "^4.1.2",
+    "jsdom": "^29.0.1",
+    "vitest": "^4.1.2"
+  }
+}

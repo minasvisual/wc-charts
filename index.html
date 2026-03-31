@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WC Charts - Exemplos de Uso</title>
+    <!-- Modern Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --text-color: #f8fafc;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --primary: #3b82f6;
+            --secondary: #8b5cf6;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.15) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.05em;
+        }
+
+        p.subtitle {
+            font-size: 1.1rem;
+            color: #94a3b8;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2.5rem;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .chart-wrapper {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 1.5rem;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+            animation: fadeInUp 0.8s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .chart-wrapper:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.6), 0 0 20px rgba(59, 130, 246, 0.2);
+        }
+
+        .chart-wrapper:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .chart-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .chart-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin: 0 0 0.25rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chart-title::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 24px;
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        .chart-desc {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin: 0;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            body {
+                padding: 1rem;
+            }
+            h1 {
+                font-size: 2.25rem;
+            }
+        }
+        
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Web Component de Gráficos</h1>
+        <p class="subtitle">Gráficos dinâmicos renderizados utilizando Factory Pattern (Config), nos mesmos moldes do `wc-forms-kit`.</p>
+    </header>
+
+    <div class="charts-grid">
+        <!-- Gráfico de Barras -->
+        <div class="chart-wrapper">
+            <div class="chart-header">
+                <h3 class="chart-title">Acessos Mensais</h3>
+                <p class="chart-desc">Exemplo gerando um Gráfico de Barras com dados dinâmicos</p>
+            </div>
+            <!-- Uso do Web Component -->
+            <wc-chart 
+                id="bar-chart" 
+                type="bar" 
+                label="Visitantes Únicos"
+                x='["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"]' 
+                y='[1200, 1900, 3000, 2500, 3200, 4100]'>
+            </wc-chart>
+        </div>
+
+        <!-- Gráfico de Pizza -->
+        <div class="chart-wrapper">
+            <div class="chart-header">
+                <h3 class="chart-title" style="--primary: var(--secondary)">Distribuição de Vendas</h3>
+                <p class="chart-desc">Exemplo gerando um Gráfico de Pizza para proporções</p>
+            </div>
+            <!-- Uso do Web Component -->
+            <wc-chart 
+                id="pie-chart" 
+                type="pie" 
+                cutout="40"
+                label="Distribuição"
+                x='["Eletrônicos", "Moda", "Casa", "Alimentos", "Livros"]' 
+                y='[45, 25, 15, 10, 5]'>
+            </wc-chart>
+        </div>
+
+        <!-- Gráfico com API Externa -->
+        <div class="chart-wrapper">
+            <div class="chart-header">
+                <h3 class="chart-title" style="--primary: #10b981">Aportes por Categoria</h3>
+                <p class="chart-desc">Processando dados brutos da DummyJSON API com o ChartDataHelper</p>
+            </div>
+            <!-- Instância sem dados iniciais, aguardando o Fetch Injetar -->
+            <wc-chart 
+                id="api-bar-chart" 
+                type="bar" 
+                label="Valor Financeiro ($)">
+            </wc-chart>
+        </div>
+        <!-- Gráfico de Linha (Line) -->
+        <div class="chart-wrapper">
+            <div class="chart-header">
+                <h3 class="chart-title" style="--primary: #3b82f6">Comparativo de Receita</h3>
+                <p class="chart-desc">Gráfico de Linha com preenchimento (Line Chart)</p>
+            </div>
+            <wc-chart type="line" label="Receita Bruta" tension="0.4"
+                x='["2021", "2022", "2023", "2024", "2025"]' 
+                y='[150, 300, 250, 480, 600]'>
+            </wc-chart>
+        </div>
+
+        <!-- Série Temporal (Time Series) -->
+        <div class="chart-wrapper">
+            <div class="chart-header">
+                <h3 class="chart-title" style="--primary: #14b8a6">Uso do Servidor (CPU)</h3>
+                <p class="chart-desc">Evolução Contínua (Time-Series Chart)</p>
+            </div>
+            <wc-chart type="time-series" label="CPU %"
+                x='["08:00", "08:15", "08:30", "08:45", "09:00", "09:15", "09:30"]' 
+                y='[15, 20, 25, 60, 45, 80, 95]'>
+            </wc-chart>
+        </div>
+
+        <!-- Gráfico Medidor (Gauge) -->
+        <div class="chart-wrapper">
+            <div class="chart-header">
+                <h3 class="chart-title" style="--primary: #ef4444">Meta de Vendas</h3>
+                <p class="chart-desc">Indicador de Progresso (Gauge Chart)</p>
+            </div>
+            <wc-chart type="gauge" label="Alcançado (%)" value="75" max="100" color="#ef4444">
+            </wc-chart>
+        </div>
+
+        <!-- Histograma -->
+        <div class="chart-wrapper">
+            <div class="chart-header">
+                <h3 class="chart-title" style="--primary: #f97316">Distribuição de Idades</h3>
+                <p class="chart-desc">Ocorrências Aglutinadas (Histogram Chart)</p>
+            </div>
+            <wc-chart type="histogram" label="Frequência"
+                x='["0-10", "11-20", "21-30", "31-40", "41-50"]' 
+                y='[5, 12, 35, 22, 10]'>
+            </wc-chart>
+        </div>
+
+        <!-- Painel de Stats -->
+        <div class="chart-wrapper">
+            <div class="chart-header">
+                <h3 class="chart-title" style="--primary: #8b5cf6">Tráfego</h3>
+                <p class="chart-desc">Cartão de Métrica HTML (Stats Chart)</p>
+            </div>
+            <wc-chart type="stats" value="42.5K" label="Usuários Ativos Únicos" desc="Aumento de +15.5% em relação ao mês anterior.">
+            </wc-chart>
+        </div>
+
+        <!-- Heatmap -->
+        <div class="chart-wrapper">
+            <div class="chart-header">
+                <h3 class="chart-title" style="--primary: #cbd5e1">Mapa de Acessos</h3>
+                <p class="chart-desc">Matriz de Intensidade (Heatmap Chart)</p>
+            </div>
+            <!-- xRows=3 * yCols=3 = dataArray=9 items -->
+            <wc-chart type="heatmap" hue="220"
+                x='["Seg", "Ter", "Qua"]' 
+                y='["Manhã", "Tarde", "Noite"]'
+                data='[10, 45, 20, 15, 60, 30, 5, 20, 10]'>
+            </wc-chart>
+        </div>
+
+        <!-- Gráfico de Dispersão (Scatter) -->
+        <div class="chart-wrapper">
+            <div class="chart-header">
+                <h3 class="chart-title" style="--primary: #a855f7">Altura vs Peso</h3>
+                <p class="chart-desc">Dispersão Cartesiana (Scatter Chart)</p>
+            </div>
+            <wc-chart type="scatter" label="Correlação (Kg vs M)"
+                x='[1.60, 1.75, 1.80, 1.55, 1.90]' 
+                y='[60, 75, 85, 50, 95]'>
+            </wc-chart>
+        </div>
+
+        <!-- Texto Formato Especial (Expression) -->
+        <div class="chart-wrapper">
+            <div class="chart-header">
+                <h3 class="chart-title" style="--primary: #f59e0b">Resumo Dinâmico</h3>
+                <p class="chart-desc">Template Formatado de Expressão (Expression Chart)</p>
+            </div>
+            <wc-chart type="expression" func="Marketing" roi="25.4%" lucro="R$ 15.000"
+                template="O setor de {{func}} obteve um lucro de {{lucro}} no último trimestre analisado, gerando um impressionante retorno sólido sobre o investimento (ROI) da ordem de {{roi}} de ponta a ponta.">
+            </wc-chart>
+        </div>
+    </div>
+
+    <!-- Scripts necessários para o funcionamento -->
+    
+    <!-- 2. Web Component (Inicializa o Componente dinamicamente, lendo e mapeando as instâncias em src/charts) -->
+    <script type="module" src="wc-chart.js"></script>
+
+    <script type="module">
+        import { ChartDataHelper } from './wc-chart.js';
+
+        // 1. Exemplo: Demonstração de reatividade do Componente (Atualizando dados via atributos)
+        // Isso prova que está totalmente funcional e dinâmico.
+        setTimeout(() => {
+            const barChart = document.getElementById('bar-chart');
+            if(barChart) {
+                // Modificando os atributos após 5 segundos para mostrar a re-renderização através do plugin
+                barChart.setAttribute('y', '[1800, 2100, 2800, 3100, 4000, 4800]');
+                console.log('Dados do gráfico de barras (Acessos Mensais) atualizados dinamicamente.');
+            }
+        }, 5000);
+
+        // 2. Exemplo Avançado: Fetching dados de uma API Externa e formatando usando a classe ChartDataHelper
+        async function fetchDummyData() {
+            try {
+                // Busca 10 produtos brutos na rota
+                const res = await fetch('https://dummyjson.com/products?limit=10');
+                const data = await res.json();
+                
+                // Formata os dados magicamente:
+                // Agrupa as diversas mercadorias da loja pela sua Categoria, e faz a somatória dos preços delas (price)
+                const formatedData = new ChartDataHelper(data.products)
+                    .sumBy('category', 'price') // Agrupa 'beauty', 'fragrances' etc e soma o dinheiro.
+                    .format();
+
+                const apiChart = document.getElementById('api-bar-chart');
+                if (apiChart) {
+                    // O helper gera: { x: '["Beauty", "Fragrances", ...]', y: '[...</>]' }
+                    apiChart.setAttribute('x', formatedData.x);
+                    apiChart.setAttribute('y', formatedData.y);
+                }
+            } catch (err) {
+                console.error("Erro ao popular Gráfico da API:", err);
+            }
+        }
+        
+        fetchDummyData();
+    </script>
+</body>
+</html>
