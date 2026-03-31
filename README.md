@@ -1,37 +1,35 @@
 # WC Charts Kit
 
-Um Web Component robusto e orientado a componentes para adicionar gráficos interativos `Chart.js` em qualquer framework (ou Vanilla JS) com zero dependências empacotadas. A arquitetura segue de perto as diretrizes de escalabilidade do `wc-forms-kit`.
+A robust and component-oriented Web Component to add interactive `Chart.js` charts in any framework (or Vanilla JS) with zero bundled dependencies. The architecture closely follows the scalability guidelines of `wc-forms-kit`.
 
-## 🚀 Instalação e Uso
-O componente não necessita de node modules ou bundlers para uso básico. Basta importar a biblioteca via script e registrar os módulos no HTML.
+## 🚀 Installation and Usage
+The component doesn't require node modules, bundlers, or CDNs for basic usage. Just import the library via script and register the module in your HTML. **Chart.js is dynamically auto-injected under the hood**, providing full Server-Side Rendering (SSR) safety for Next.js users.
 
 ```html
-<!-- Carregamento do Chart.JS puro, via cdn local/hosteado -->
-<script src="chart.umd.js"></script>
-<!-- Importação inicializador do Web Component via ESModules -->
+<!-- Web Component Initialization via ESModules -->
 <script type="module" src="wc-chart.js"></script>
 
-<!-- Renderização declarativa -->
+<!-- Declarative Rendering -->
 <wc-chart 
     type="bar" 
-    label="Vendas 2026"
-    x='["Jan", "Fev", "Mar"]' 
+    label="2026 Sales"
+    x='["Jan", "Feb", "Mar"]' 
     y='[1200, 1900, 3000]'>
 </wc-chart>
 ```
 
-## 🎨 Customização Visual via CSS Variables
-Os estilos podem ser declarados usando variáveis CSS na classe wrapper ou diretamente em `:root`.
+## 🎨 Visual Customization via CSS Variables
+Styles can be declared using CSS variables on the wrapper class or directly in `:root`.
 
-Variáveis suportadas:
-* `--wc-chart-bg`: Cor de fundo do chart (padrão: `#ffffff`)
-* `--wc-chart-height`: Altura contendo o diagrama (padrão: `400px`)
-* `--wc-chart-padding`: Margem interna (padrão: `1.5rem`)
-* `--wc-chart-radius`: Arredondamento da view (padrão: `16px`)
-* `--wc-chart-shadow`: Sombras da base (padrão: sombra leve)
-* `--wc-chart-hover-shadow`: Sombra quando existe estado *hover*
+Supported variables:
+* `--wc-chart-bg`: Chart background color (default: `#ffffff`)
+* `--wc-chart-height`: Height enclosing the diagram (default: `400px`)
+* `--wc-chart-padding`: Internal padding (default: `1.5rem`)
+* `--wc-chart-radius`: Border radius of the view (default: `16px`)
+* `--wc-chart-shadow`: Base shadows (default: soft shadow)
+* `--wc-chart-hover-shadow`: Shadow when in *hover* state
 
-Exemplo:
+Example:
 ```css
 wc-chart {
     --wc-chart-bg: #1e293b; /* Dark mode card */
@@ -39,8 +37,8 @@ wc-chart {
 }
 ```
 
-## 🔌 Arquitetura: Estendendo Novos Gráficos
-Para criar e registrar nativamente motores de renderização complexos, a lógica deve exportar uma Classe que respeite a inicialização da API do construtor:
+## 🔌 Architecture: Extending New Charts
+To build and natively register complex render engines, the logic must export a Class that respects the constructor API initialization:
 
 ```javascript
 import { Config, WcChart } from './wc-chart.js';
@@ -51,7 +49,7 @@ class RadarChart {
         this.shadow = shadow;
         this.emitEvent = emitEvent;
         
-        // 1. Cria o contêiner e o Canvas no Shadow DOM
+        // 1. Creates the container and Canvas inside the Shadow DOM
         this.shadow.innerHTML = `
             <style>
                 .chart-container {
@@ -64,17 +62,17 @@ class RadarChart {
             <div class="chart-container"><canvas></canvas></div>
         `;
         
-        // 2. Aguarda a montagem do template para renderizar o gráfico
+        // 2. Waits for the template to mount before rendering the chart
         setTimeout(() => this.initChart(), 0);
     }
 
-    // Parseia os arrays em JSON que vem do HTML via atributos
+    // Parses JSON arrays that come from HTML attributes
     getParams() {
         try {
             return {
                 x: JSON.parse(this.el.getAttribute('x') || '[]'),
                 y: JSON.parse(this.el.getAttribute('y') || '[]'),
-                label: this.el.getAttribute('label') || 'Dados Radar'
+                label: this.el.getAttribute('label') || 'Radar Data'
             };
         } catch {
             return { x: [], y: [], label: '' };
@@ -103,7 +101,7 @@ class RadarChart {
         });
     }
 
-    // 3. Atualiza os dados de forma reativa quando os atributos do elemento HTML mudam
+    // 3. Reactively updates data when HTML element attributes mutate
     onAttributeChanged(name, oldValue, newValue) {
         if (oldValue !== newValue && this.chartInstance) {
             const { x, y, label } = this.getParams();
@@ -118,63 +116,63 @@ class RadarChart {
 Config.registerChart('radar', RadarChart);
 ```
 
-Para usar o seu gráfico, basta enviar o atributo type igual o qual você usou para registrá-lo: `<wc-chart type="radar"></wc-chart>`.
+To use your chart, simply pass the `type` attribute equal to what you used to register it: `<wc-chart type="radar"></wc-chart>`.
 
-## ⚡ Eventos Nativos
-Você pode "escutar" os estágios da biblioteca usando eventos nativos do DOM:
-* `@before-mount` - Antes do Canvas ser desenhado no DOM
-* `@after-mount` - Assim que a engine de rendering desenhou o gráfico (detalhes do evento entregam `{ instance }`)
-* `@updated` - Sempre que um novo valor foi enviado nos atributos e o componente reagiu
-* `@click` - Quando uma área do gráfico/view for clicada
+## ⚡ Native Events
+You can "listen" to the library stages using native DOM events:
+* `@before-mount` - Intercepted before the Canvas is drawn to the DOM
+* `@after-mount` - As soon as the rendering engine has drawn the chart (event details provide `{ instance }`)
+* `@updated` - Whenever a new value is sent via attributes and the component reacts
+* `@click` - When a specific area of the chart/view is clicked
 
 ```javascript
-document.querySelector('#meu-grafico').addEventListener('updated', (e) => {
-    console.log('Componente atualizou o atributo', e.detail.attribute);
+document.querySelector('#my-chart').addEventListener('updated', (e) => {
+    console.log('Component updated its attribute:', e.detail.attribute);
 });
 ```
 
-## 🧮 ChartDataHelper (Estilo Pandas/Dataframe)
-Incluso na biblioteca, criamos um utilitário exclusivo em JS inspirado na praticidade do *Pandas (Python)* para filtrar, ordenar e formatar bancos de dados puros antes de injetá-los no Web Component.
+## 🧮 ChartDataHelper (Pandas/Dataframe Style)
+Included in the library, there is a dedicated Javascript utility heavily inspired by the seamless developer experience of *Pandas (Python)* to filter, sort and format pure raw datasets before injecting them into the Web Component.
 
-Ele suporta "Dot-Notation" para acessar propriedades dentro de objetos aninhados (ex: `address.street`) nativamente:
+It supports "Dot-Notation" to natively access deep/nested object properties (e.g. `address.street`):
 
 ```javascript
 import { ChartDataHelper } from './wc-chart.js';
 
-// 1. Instancie sua collection nativa
+// 1. Instantiate your native collection
 const resultDataset = new ChartDataHelper(mockApiData)
-    // 2. Filtre elementos dinamicamente (query) com operadores clássicos
+    // 2. Dynamically filter elements (query) with classic operators
     .query('meta.status', '==', 'active') 
     .query('price', '>', 50)
     
-    // 3. Ordene a fonte de dados (sortValues) - true = ascendente / false = decrescente
+    // 3. Sort the data source (sortValues) - true = ascending / false = descending
     .sortValues('meta.barcode', false) 
     
-    // 4. Agrupe ou Some um campo em relação ao outro
-    .sumBy('category.id', 'price') // Agrupa ID da categoria com o R$ Total Arrecadado
+    // 4. Group or Sum a field relative to another
+    .sumBy('category.id', 'price') // Groups Category ID alongside the Total Revenue gathered
     
-    // 5. Formatar converte o resultado final num Payload seguro de envio JSON Arrays dos Extremos X/Y
+    // 5. Format converts the final outcome into a secure stringified JSON Payload of X/Y Arrays
     .format();
 
-// resultDataset irá entregar: { x: '["Eletrônicos", "Moda"]', y: '[1500, 300]' }
-// Pronto para: elemento.setAttribute('x', resultDataset.x);
+// resultDataset will output: { x: '["Electronics", "Fashion"]', y: '[1500, 300]' }
+// Ready for: myElement.setAttribute('x', resultDataset.x);
 ```
 
-### 📚 API e Tabela de Métodos (`ChartDataHelper`)
+### 📚 API and Methods Table (`ChartDataHelper`)
 
-Todos os métodos que dependem de chaves de objetos natos suportam **"Dot-Notation"** como argumento (ex: `user.meta.age`).
+All methods dealing with native data keys support **"Dot-Notation"** natively (ex: `user.meta.age`).
 
-| Método | Retorno | Descrição | Exemplo de Uso |
+| Method | Returns | Description | Usage Example |
 |:---|:---:|:---|:---|
-| `.query(field, op, val)` | `this` | Filtra a collection preservando os dados. Operadores: `==, !=, >, <, >=, <=, in, not in, contains`. Também suporta *arrow function* como custom condition. | `.query('price', '>', 50)` ou `.query('age', v => v > 18)` |
-| `.sortValues(field, asc)` | `this` | Reordena a collection baseada num campo primitivo. O segundo param dita `true` (Crescente) ou `false` (Decrescente). | `.sortValues('meta.date', false)` |
-| `.groupBy(field)` | `this` | Agrupa objetos com os mesmos valores de uma chave e guarda uma gaveta deles (gera barras de *Volume/Length* absolutos na mesma linha base). | `.groupBy('category.id')` |
-| `.countBy(field)` | `this` | Semelhante ao groupBy, porém consolida o registro somando +1 à quantidade num dicionário embutido. | `.countBy('status')` |
-| `.sumBy(group, sum)` | `this` | Agrupa toda a coleção utilizando `group`, mas ao invés de contar os items na barra cumulativa, soma os valores do target em `sum` (Caso `sum` seja numérico em um node, adiciona esse valor ao grupo, se for string ou der problema, faz fall-back para contagem unitária de `1` item). | `.sumBy('mes', 'financeiro.lucro')` |
-| `.extractBy(field)` | `this` | Destrói os objetos de toda a matriz e gera um Array estático unilateral extraindo todas as referências do campo `field` puro (ideal para graficos Scatter ou lineares sequenciais simples). | `.extractBy('email')` |
-| `.rangeBy(field, ranges)` | `this` | Separa dados baseados numa Array de configurações/limites preestabelecidos com as tags `{ label, min, max }`. Suporta `Date` ou `Float/Int`. Ignora Ranges não definidos aglomerando num field *"Fora da Faixa"*. | `.rangeBy('age', [{label: 'Jovens', min: 0, max: 20}])` |
-| `.getCount()` | `Number` | Função de observação. Retorna o montante total de eixos capturados/filtrados/criados geradas após os parses atuais de extração (como as chaves consolidadas). | `.getCount()` |
-| `.format()` | `JSON` | Fator final que engloba tudo, stringificando a arquitetura pra ser aceita via atribuição em Web Components: `{ x: '["A", "B"]', y: '[10, 20]' }`. Ele extrai e aplica a função `.getLabels()` pra emascular as labels X da array final. | `.format()` |
+| `.query(field, op, val)` | `this` | Filters the collection while preserving the objects natively. Available operators: `==, !=, >, <, >=, <=, in, not in, contains`. Also supports an *arrow function* as a custom check. | `.query('price', '>', 50)` or `.query('age', v => v > 18)` |
+| `.sortValues(field, asc)` | `this` | Flattens and reorders the collection based on a primitive field. The second parameter dictates `true` (Ascending) or `false` (Descending). | `.sortValues('meta.date', false)` |
+| `.groupBy(field)` | `this` | Groups objects holding identically matched keys and stores them in dictionary arrays (generates *Volume/Length* stacked bars over the same baseline scale). | `.groupBy('category.id')` |
+| `.countBy(field)` | `this` | Similar to groupBy, but automatically consolidates the records by adding +1 to its dictionary quantity output amount natively. | `.countBy('status')` |
+| `.sumBy(group, sum)` | `this` | Groups everything relying on `group`, but instead of bumping +1 over the items array, it precisely sums targeted numerical values from `sum` (If `sum` is numerical, it appends itself into the total; if it is a string or fails parsing, it falls back to a unitary string count of `1`). | `.sumBy('month', 'financial.profit')` |
+| `.extractBy(field)` | `this` | Erases collection-level depth and outputs a static 1D Array extracting strictly the `field` references (ideal for Scatter or simple sequential linear traces). | `.extractBy('email')` |
+| `.rangeBy(field, ranges)` | `this` | Categorizes chronological/statistical inputs according to a predefined Array bounded by limits `{ label, min, max }`. Supports `Date` objects or `Float/Int` parsing. Bypasses unparsed inputs grouping them into an *"Out of bounds"* bracket. | `.rangeBy('age', [{label: 'Youth', min: 0, max: 20}])` |
+| `.getCount()` | `Number` | Observation utility function. Returns the total amount of axes filtered/captured/created after the recent extraction parses. | `.getCount()` |
+| `.format()` | `JSON` | Macro closer encompassing the prior manipulations, rendering stringified architectures mapped explicitly for native Web Component attributes: `{ x: '["A", "B"]', y: '[10, 20]' }`. It triggers the `.getLabels()` pipeline abstracting X-axis variables. | `.format()` |
 
 ___
-**Inspirado em Next.js Web Components Design e Vanilla JS Scalable Code.**
+**Inspired by Next.js Web Components Design and Vanilla JS Scalable Code.**
